@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Miracle Kids</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Fredoka:wght@500;600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green-deep:#1F6B3A;
+    --green:#3E9B4F;
+    --green-soft:#EAF4EB;
+    --gold:#E3A93A;
+    --gold-deep:#C98F1F;
+    --ink:#20241F;
+    --muted:#5F6B60;
+    --paper:#FFFFFF;
+    --paper-soft:#F5F8F4;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ font-family:'Work Sans', sans-serif; color:var(--ink); background:var(--paper); overflow-x:hidden; }
+  h1,h2,h3{ font-family:'Playfair Display', serif; }
+  .wordmark{ font-family:'Fredoka', sans-serif; }
+  ::selection{ background:var(--gold); color:#fff; }
+  a{ text-decoration:none; color:inherit; }
+  ul{ list-style:none; }
+  img{ max-width:100%; display:block; }
+  section{ padding:100px 8%; position:relative; }
+  @media(max-width:768px){ section{ padding:70px 6%; } }
+  section:not(.hero)::before{
+    content:''; position:absolute; top:0; left:10%; right:10%; height:2px;
+    background:linear-gradient(90deg, transparent, var(--gold) 20%, var(--gold) 80%, transparent);
+  }
+
+  .brand-name{ color:var(--green-deep); font-weight:600; }
+
+  /* ---------- PAGE LOADER ---------- */
+  #loader{
+    position:fixed; inset:0; background:var(--green-deep); z-index:5000;
+    display:flex; align-items:center; justify-content:center;
+    transition:opacity .6s ease, visibility .6s ease;
+  }
+  #loader img{ width:90px; height:90px; border-radius:50%; animation:pulseLoad 1.2s ease-in-out infinite; }
+  @keyframes pulseLoad{ 0%,100%{ transform:scale(1); opacity:1;} 50%{ transform:scale(1.1); opacity:.8;} }
+  #loader.hide{ opacity:0; visibility:hidden; }
+
+  /* ---------- NAVBAR ---------- */
+  .navbar{
+    position:fixed; top:0; left:0; width:100%; display:flex; align-items:center; justify-content:flex-end;
+    padding:18px 6%; z-index:1000; transition:background .4s ease, box-shadow .4s ease, padding .4s ease;
+  }
+  .navbar.scrolled{ background:rgba(255,255,255,0.95); backdrop-filter:blur(10px); box-shadow:0 2px 18px rgba(0,0,0,0.06); padding:10px 6%; }
+
+  .nav-links{ display:flex; gap:32px; }
+  .nav-links a{ font-size:0.95rem; font-weight:500; color:#fff; position:relative; padding-bottom:4px; transition:color .3s; }
+  .navbar.scrolled .nav-links a{ color:var(--ink); }
+  .nav-links a::after{ content:''; position:absolute; bottom:0; left:0; width:0; height:2px; background:var(--gold); transition:width .3s ease; }
+  .nav-links a:hover::after{ width:100%; }
+
+  .hamburger{ display:none; flex-direction:column; gap:5px; cursor:pointer; z-index:1100; }
+  .hamburger span{ width:26px; height:2px; background:#fff; transition:.3s; }
+  .navbar.scrolled .hamburger span{ background:var(--ink); }
+
+  @media(max-width:860px){
+    .nav-links{ position:fixed; top:0; right:-100%; height:100vh; width:min(75%,320px); background:var(--green-deep);
+      flex-direction:column; padding:110px 40px; transition:right .45s ease; gap:28px; }
+    .nav-links.open{ right:0; }
+    .nav-links a{ color:#fff !important; font-size:1.1rem; }
+    .hamburger{ display:flex; }
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{ position:relative; height:80vh; min-height:640px; display:flex; align-items:center; justify-content:center;
+    text-align:center; color:#fff; overflow:hidden; }
+  .hero::before{
+    content:''; position:absolute; inset:0;
+    background:
+      linear-gradient(180deg, rgba(20,50,30,0.55) 0%, rgba(15,40,24,0.82) 100%),
+      url('/FB_IMG_1783515414637.jpg') center/cover no-repeat;
+    z-index:0;
+  }
+  .leaf{ position:absolute; z-index:1; opacity:0.55; pointer-events:none; font-size:1.4rem; animation:drift linear infinite; }
+  @keyframes drift{
+    0%{ transform:translateY(-10vh) translateX(0) rotate(0deg); opacity:0; }
+    10%{ opacity:.6; }
+    100%{ transform:translateY(110vh) translateX(40px) rotate(220deg); opacity:0; }
+  }
+
+  .hero-content{ position:relative; z-index:2; padding:0 20px; }
+  .scroll-hint{ position:absolute; bottom:38px; left:50%; transform:translateX(-50%); font-size:0.8rem;
+    letter-spacing:2px; text-transform:uppercase; color:#fff; opacity:0.8; animation:bounce 2s infinite; }
+  @keyframes bounce{ 0%,100%{ transform:translate(-50%,0);} 50%{ transform:translate(-50%,8px);} }
+
+  /* ---------- ANIMATED LOGO (single element, hero -> navbar top-left) ---------- */
+  .logo-wrap{
+    position:fixed; left:0; top:0; z-index:1050;
+    width:150px; height:150px;
+    transform:translate3d(calc(50vw - 75px), calc(50vh - 75px), 0) scale(1);
+    transform-origin:top left;
+    will-change:transform;
+    pointer-events:none;
+  }
+  .logo-circle{
+    width:150px; height:150px; border-radius:50%; overflow:hidden;
+    border:4px solid var(--gold); box-shadow:0 10px 40px rgba(0,0,0,0.35); background:#fff;
+  }
+  .logo-circle img{ width:100%; height:100%; object-fit:cover; }
+  .logo-wrap .school-name-big{
+    position:absolute; top:164px; left:50%; transform:translateX(-50%);
+    font-size:1.9rem; font-weight:600; color:#fff; white-space:nowrap; transition:opacity .2s linear;
+  }
+  .logo-wrap .tagline{
+    position:absolute; top:212px; left:50%; transform:translateX(-50%);
+    font-size:0.85rem; color:var(--gold); letter-spacing:2px; text-transform:uppercase; white-space:nowrap; transition:opacity .2s linear;
+  }
+
+  /* ---------- SCROLL REVEAL ---------- */
+  .reveal{ opacity:0; transform:translateY(40px); transition:opacity .8s cubic-bezier(.22,.9,.34,1), transform .8s cubic-bezier(.22,.9,.34,1); }
+  .reveal.visible{ opacity:1; transform:translateY(0); }
+  .reveal-left{ transform:translateX(-50px); }
+  .reveal-left.visible{ transform:translateX(0); }
+  .reveal-right{ transform:translateX(50px); }
+  .reveal-right.visible{ transform:translateX(0); }
+  .stagger > *{ opacity:0; transform:translateY(30px); transition:opacity .7s cubic-bezier(.22,.9,.34,1), transform .7s cubic-bezier(.22,.9,.34,1); }
+  .stagger.visible > *{ opacity:1; transform:translateY(0); }
+  .stagger.visible > *:nth-child(1){ transition-delay:.05s; }
+  .stagger.visible > *:nth-child(2){ transition-delay:.18s; }
+  .stagger.visible > *:nth-child(3){ transition-delay:.31s; }
+  .stagger.visible > *:nth-child(4){ transition-delay:.44s; }
+
+  .eyebrow{ color:var(--gold-deep); text-transform:uppercase; letter-spacing:3px; font-size:0.8rem; font-weight:600; margin-bottom:14px; display:block; }
+  .section-title{ font-size:2.2rem; color:var(--green-deep); margin-bottom:20px; }
+  .section-text{ color:var(--muted); line-height:1.8; font-size:1.02rem; max-width:640px; }
+
+  /* ---------- ABOUT ---------- */
+  .about{ display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; background:var(--paper-soft); }
+  .about img{ border-radius:14px; box-shadow:0 20px 50px rgba(31,107,58,0.18); }
+  @media(max-width:860px){ .about{ grid-template-columns:1fr; } }
+
+  /* ---------- STATS ---------- */
+  .stats{ background:var(--green-deep); color:#fff; display:flex; flex-wrap:wrap; justify-content:space-around; text-align:center; gap:30px; }
+  .stat h3{ font-size:2.6rem; color:var(--gold); }
+  .stat p{ margin-top:6px; font-size:0.9rem; letter-spacing:1px; text-transform:uppercase; color:#d8e9db; }
+  
+  /* ---------- FACILITIES ---------- */
+.facilities{ background:var(--paper-soft); text-align:center; }
+.facility-grid{
+  display:grid; grid-template-columns:repeat(3,1fr); gap:30px; margin-top:40px; text-align:left;
+}
+@media(max-width:860px){ .facility-grid{ grid-template-columns:repeat(2,1fr); } }
+@media(max-width:560px){ .facility-grid{ grid-template-columns:1fr; } }
+.facility-card{
+  background:#fff; border-radius:16px; padding:32px 26px; box-shadow:0 10px 30px rgba(31,107,58,0.08);
+  border:1px solid #e9f0ea; transition:transform .3s ease, box-shadow .3s ease;
+}
+.facility-card:hover{ transform:translateY(-6px); box-shadow:0 18px 40px rgba(31,107,58,0.15); }
+.facility-icon{ font-size:2.2rem; margin-bottom:14px; }
+.facility-card h3{ font-size:1.15rem; color:var(--green-deep); margin-bottom:10px; }
+.facility-card p{ color:var(--muted); font-size:0.92rem; line-height:1.6; }
+
+  /* ---------- DIRECTOR ---------- */
+  .director{ display:grid; grid-template-columns:280px 1fr; gap:60px; align-items:center; }
+  .director img{ border-radius:14px; }
+  .director blockquote{ font-family:'Playfair Display', serif; font-style:italic; font-size:1.3rem; color:var(--ink);
+    line-height:1.7; border-left:3px solid var(--gold); padding-left:24px; }
+  .director .signee{ margin-top:20px; font-weight:600; color:var(--green-deep); font-style:normal; }
+  @media(max-width:860px){ .director{ grid-template-columns:1fr; } .director img{ width:180px; margin:0 auto; } }
+
+  /* ---------- ADMISSION ---------- */
+  .admission{ background:var(--paper-soft); text-align:center; }
+  .admission .cta-btn{ display:inline-block; margin-top:20px; background:var(--green-deep); color:#fff; padding:14px 34px;
+    border-radius:30px; font-weight:600; transition:.3s; }
+  .admission .cta-btn:hover{ background:var(--gold); color:var(--ink); transform:translateY(-3px); }
+
+  /* ---------- NOTICES ---------- */
+  .ticker-track{ display:flex; gap:20px; overflow:hidden; margin-top:20px; }
+  .ticker-track ul{ display:flex; gap:20px; animation:scroll-left 25s linear infinite; }
+  .ticker-track li{ white-space:nowrap; background:#fff; border:1px solid #e1ebe2; padding:12px 22px; border-radius:30px;
+    font-size:0.9rem; color:var(--green-deep); font-weight:500; box-shadow:0 4px 14px rgba(0,0,0,0.05); cursor:pointer; transition:.25s; }
+  .ticker-track li:hover{ background:var(--gold); color:#fff; border-color:var(--gold); }
+  @keyframes scroll-left{ 0%{ transform:translateX(0);} 100%{ transform:translateX(-50%);} }
+
+  /* ---------- GALLERY ---------- */
+  .carousel{ position:relative; max-width:900px; margin:40px auto 0; height:420px; border-radius:16px; overflow:hidden;
+    box-shadow:0 20px 50px rgba(31,107,58,0.18); }
+  .carousel img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity 1.2s ease; }
+  .carousel img.active{ opacity:1; }
+
+  /* ---------- TESTIMONIALS ---------- */
+  .testimonials{ background:var(--green-soft); text-align:center; }
+  .testi-card{ max-width:640px; margin:30px auto 0; background:#fff; padding:34px; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.06); }
+  .testi-card p.quote{ font-family:'Playfair Display', serif; font-style:italic; color:var(--ink); font-size:1.1rem; }
+  .testi-card .who{ margin-top:14px; color:var(--green-deep); font-weight:600; font-size:0.9rem; }
+
+  /* ---------- CONTACT ---------- */
+  .contact{ background:var(--paper-soft); }
+  .contact-grid{ display:grid; grid-template-columns:1fr 1fr; gap:50px; }
+  @media(max-width:860px){ .contact-grid{ grid-template-columns:1fr; } }
+  .contact-info li{ margin-bottom:18px; display:flex; gap:14px; align-items:flex-start; color:var(--muted); }
+  .contact-info li b{ color:var(--green-deep); display:block; }
+  .socials{ display:flex; gap:14px; margin-top:24px; }
+  .socials a{ width:42px; height:42px; border-radius:50%; background:var(--paper-soft); color:#fff; display:flex;
+    align-items:center; justify-content:center; font-size:0.85rem; font-weight:700; transition:.3s; }
+  .socials a:hover{ background:var(--gold); color:#fff; transform:translateY(-3px); }
+  .map-frame{ border-radius:14px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.08); }
+  .map-frame iframe{ width:100%; height:280px; border:0; }
+
+  /* ---------- FOOTER ---------- */
+  footer{ background:var(--green-deep); color:#dcebe0; text-align:center; padding:34px 6%; font-size:0.85rem; }
+  footer .brand-name{ color:var(--gold); }
+
+  /* ---------- FLOATING FEEDBACK BUTTON ---------- */
+  .feedback-float{ position:fixed; bottom:26px; right:26px; width:58px; height:58px; border-radius:50%;
+    background:var(--green-deep); color:#fff; display:flex; align-items:center; justify-content:center;
+    font-size:1.5rem; box-shadow:0 8px 20px rgba(0,0,0,0.25); z-index:900; border:none; cursor:pointer; transition:.3s; }
+  .feedback-float:hover{ background:var(--gold); transform:translateY(-3px); }
+
+  /* ---------- BACK TO TOP ---------- */
+  .to-top{ position:fixed; bottom:26px; left:26px; width:46px; height:46px; border-radius:50%; background:#fff;
+    color:var(--green-deep); border:2px solid var(--green-deep); display:flex; align-items:center; justify-content:center;
+    font-size:1.1rem; cursor:pointer; z-index:900; opacity:0; pointer-events:none; transition:.3s; }
+  .to-top.show{ opacity:1; pointer-events:auto; }
+
+  /* ---------- MODALS ---------- */
+  .modal-overlay{ position:fixed; inset:0; background:rgba(20,35,25,0.55); z-index:2000; display:flex;
+    align-items:center; justify-content:center; opacity:0; visibility:hidden; transition:opacity .35s ease, visibility .35s ease; padding:20px; }
+  .modal-overlay.open{ opacity:1; visibility:visible; }
+  .modal-box{ background:#fff; border-radius:16px; max-width:460px; width:100%; padding:34px; position:relative;
+    transform:scale(.9) translateY(20px); transition:transform .35s ease; max-height:80vh; overflow-y:auto; }
+  .modal-overlay.open .modal-box{ transform:scale(1) translateY(0); }
+  .modal-close{ position:absolute; top:16px; right:18px; font-size:1.3rem; cursor:pointer; color:var(--muted); background:none; border:none; }
+  .modal-box h3{ color:var(--green-deep); margin-bottom:14px; }
+  .modal-box p{ color:var(--muted); line-height:1.7; }
+
+  form.feedback-form{ display:flex; flex-direction:column; gap:14px; margin-top:16px; }
+  form.feedback-form input, form.feedback-form textarea{ border:1px solid #dfe3e9; padding:13px 16px; border-radius:8px;
+    font-family:inherit; font-size:0.95rem; }
+  form.feedback-form input:focus, form.feedback-form textarea:focus{ outline:2px solid var(--gold); border-color:var(--gold); }
+  form.feedback-form button{ background:var(--green-deep); color:#fff; border:none; padding:14px; border-radius:8px;
+    font-weight:600; cursor:pointer; transition:.3s; }
+  form.feedback-form button:hover{ background:var(--gold); }
+</style>
+</head>
+<body>
+
+<div id="loader"><img src="/FB_IMG_1783168290417.jpg" alt="loading"></div>
+
+<nav class="navbar" id="navbar">
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#facilities">Facilities</a></li>
+    <li><a href="#director">Director's Message</a></li>
+    <li><a href="#admission">Admission</a></li>
+    <li><a href="#notices">Notices</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="logo-wrap" id="logoWrap">
+  <div class="logo-circle"><img src="/FB_IMG_1783168290417.jpg" alt="Miracle Kids logo"></div>
+  <div class="school-name-big wordmark">Miracle Kids</div>
+  <div class="tagline">Discipline · Destiny · Determine</div>
+</div>
+
+<section class="hero" id="home"></section>
+
+<section class="about" id="about">
+  <div class="reveal reveal-left">
+    <span class="eyebrow">About Us</span>
+    <h2 class="section-title">A legacy of nurturing young minds</h2>
+    <p class="section-text">
+      At <span class="brand-name">Miracle Kids</span>, we believe every child is a seed of potential waiting to
+      grow. Guided by discipline, driven by destiny, and shaped by determination, our classrooms blend structure
+      with warmth so every learner feels seen and supported.
+    </p>
+    <p class="section-text" style="margin-top:16px;">
+      With caring educators, joyful learning spaces, and a genuine focus on values alongside academics, we help
+      children build the roots to grow tall.
+    </p>
+  </div>
+  <img class="reveal reveal-right" src="/IMG_20260704_213820.jpg" alt="School building" loading="lazy">
+</section>
+
+<section class="stats reveal stagger">
+  <div class="stat"><h3 data-target="17">0</h3><p>Years of Care</p></div>
+  <div class="stat"><h3 data-target="210">0</h3><p>Happy Students</p></div>
+  <div class="stat"><h3 data-target="23">0</h3><p>Dedicated Teachers</p></div>
+  <div class="stat"><h3 data-target="5">0</h3><p>Awards Won</p></div>
+</section>
+
+<section class="facilities reveal" id="facilities">
+  <span class="eyebrow">What We Offer</span>
+  <h2 class="section-title">Facilities built for growing minds</h2>
+ <div class="facility-grid stagger reveal">
+    <div class="facility-card">
+      <div class="facility-icon">🏫</div>
+      <h3>Smart Classrooms</h3>
+      <p>Bright, well-maintained classrooms equipped with digital boards for interactive learning.</p>
+    </div>
+    <div class="facility-card">
+      <div class="facility-icon">📚</div>
+      <h3>Library & Reading Corner</h3>
+      <p>A well-stocked library that nurtures curiosity and a lifelong love for reading.</p>
+    </div>
+    <div class="facility-card">
+      <div class="facility-icon">🔬</div>
+      <h3>Science & Computer Labs</h3>
+      <p>Hands-on labs that turn theory into discovery through experiments and practical.</p>
+    </div>
+    <div class="facility-card">
+      <div class="facility-icon">⚽</div>
+      <h3>Playground & Sports</h3>
+      <p>Spacious grounds for football, athletics, and everyday active play.</p>
+    </div>
+    <div class="facility-card">
+      <div class="facility-icon">🚌</div>
+      <h3>Safe Transport</h3>
+      <p>Bus and van with attendants ensuring safe pick-up and drop-off.</p>
+    </div>
+    <div class="facility-card">
+      <div class="facility-icon">🛡️</div>
+      <h3>CCTV & Security</h3>
+      <p>24/7 CCTV surveillance and a trained security guard ensure a safe and secure school environment.</p>
+    </div>
+    <div class="facility-card">
+      <div class="facility-icon">🌈</div>
+      <h3>Beyond the Classroom</h3>
+      <p>From nutritious meals and dedicated care to music, art, taekwondo, and a vibrant auditorium, we foster creativity, confidence, and all-round development.</p>
+    </div>
+  </div>
+</section>
+
+<section class="director-section reveal" id="director">
+  <span class="eyebrow">Leadership</span>
+  <img src="/IMG-20260709-WA0003.jpg" alt="Director" loading="lazy">
+  <h2 class="section-title">Message from the Director</h2>
+  <div class="director" style="margin-top:30px;">
+    <img src="/Screenshot_2026-07-08-21-27-29-852_com.google.android.youtube~2.jpg" alt="Director" loading="lazy">
+    <blockquote>
+      "At <span class="brand-name">Miracle Kids</span>, every child matters and every dream counts. We are committed to building strong foundations for lifelong success by nurturing confident learners, compassionate leaders, and responsible individuals in a caring, inspiring environment."
+      <div class="signee">—Mrs. Amrita Shah, Director, Miracle Kids</div>
+    </blockquote>
+  </div>
+</section>
+
+<section class="admission reveal" id="admission">
+  <span class="eyebrow">Admissions</span>
+  <h2 class="section-title">Admissions open for 2026–27</h2>
+  <p class="section-text" style="margin:0 auto;">
+    Reach out to our admission desk for eligibility,
+    important dates, and fee details.
+  </p>
+  <a href="#contact" class="cta-btn">Enquire Now</a>
+</section>
+
+<section class="notices reveal" id="notices">
+  <span class="eyebrow">Notices</span>
+  <h2 class="section-title">Latest Announcements</h2>
+  <p class="section-text">Tap any notice to read the full announcement.</p>
+  <div class="ticker-track">
+    <ul id="noticeList">
+      <li data-title="Summer Break Ends" data-detail="Summer vacation concludes on 1st July. Classes resume as per the regular timetable from 2nd July onward.">📌 Summer break ends — 1st July</li>
+      <li data-title="PTA Meeting" data-detail="A Parent-Teacher meeting is scheduled for 12th July at 9 AM in the school auditorium to discuss student progress and upcoming term activities.">📌 PTA Meeting — 20th July, 10 AM</li>
+    </ul>
+  </div>
+</section>
+
+<section class="gallery reveal" id="gallery">
+  <span class="eyebrow">Gallery</span>
+  <h2 class="section-title">Life at Miracle Kids</h2>
+  <div class="carousel" id="carousel">
+    <img src="/IMG-20260704-WA0003.jpg" class="active" loading="lazy">
+    <img src="/IMG-20260704-WA0013.jpg" loading="lazy">
+    <img src="/IMG-20260704-WA0020.jpg" loading="lazy">
+    <img src="/IMG-20260704-WA0016.jpg" loading="lazy">
+    <img src="/IMG-20260704-WA0015.jpg" loading="lazy">
+    <img src="/IMG-20260704-WA0010.jpg" loading="lazy">
+    <img src="/IMG-20260704-WA0009.jpg" loading="lazy">
+  </div>
+</section>
+
+<section class="testimonials reveal">
+  <span class="eyebrow">Parents Speak</span>
+  <h2 class="section-title">What our families say</h2>
+  <div class="testi-card">
+    <p class="quote">"Miracle Kids has been wonderful for our daughter — she's more confident, curious, and disciplined than ever."</p>
+    <div class="who">— A Parent, Grade 1</div>
+  </div>
+</section>
+
+<section class="contact reveal" id="contact">
+  <span class="eyebrow">Contact</span>
+  <h2 class="section-title">Get in touch</h2>
+  <div class="contact-grid" style="margin-top:30px;">
+    <div>
+      <ul class="contact-info">
+        <li>📍 <div><b>Address</b>Adarsh Tole-3, Birgunj, Nepal</div></li>
+        <li>☎️ <div><b>Phone</b>051591143, 051591180</div></li>
+        <li>📞 <div><b>WhatsApp</b>+977 9804818571</div></li>
+        <li>✉️ <div><b>Email</b>miraclekidspvt@gmail.com</div></li>
+      </ul>
+      <div class="socials">
+        <a href="https://www.facebook.com/share/1RBLF6KQUv/" title="Facebook"><img src='/3840px-Facebook_f_logo_(2021).svg.png'</a>
+        <a href="https://www.instagram.com/miraclebrj?igsh=NnczOHphb2ZnbzRr" title="Instagram"><img src='/vecteezy_instagram-logo-png-instagram-icon-transparent_18930415.png'</a>
+        <a href="https://youtube.com/@miraclekids3617?si=QelF_UhqKXD1PSYJ" title="YouTube"><img src='/vecteezy_youtube-logo-png-youtube-logo-transparent-png-youtube-icon_23986704.png'</a>
+      </div>
+    </div>
+    <div class="map-frame">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3554.668712523234!2d84.86751389999999!3d27.0090276!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3993552f814edfc3%3A0x9d1cbf04049852ff!2sMiracle%20Kids%20School!5e0!3m2!1sen!2snp!4v1783520763877!5m2!1sen!2snp" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+    </div>
+  </div>
+</section>
+
+<footer><b>Play, Learn & Grow Together</b></footer>
+<button class="to-top" id="toTop" title="Back to top">↑</button>
+<button class="feedback-float" id="feedbackBtn" title="Send us a message">💬</button>
+
+<!-- Notice Modal -->
+<div class="modal-overlay" id="noticeModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('noticeModal')">✕</button>
+    <h3 id="noticeModalTitle">Notice</h3>
+    <p id="noticeModalDetail"></p>
+  </div>
+</div>
+
+<!-- Feedback Modal -->
+<div class="modal-overlay" id="feedbackModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('feedbackModal')">✕</button>
+    <h3>Send us a message</h3>
+    <p style="margin-bottom:0;">Have a question or feedback? This opens your email app addressed directly to the school.</p>
+    <form class="feedback-form" id="feedbackForm">
+      <input type="text" id="fbName" placeholder="Your Name" required>
+      <input type="email" id="fbEmail" placeholder="Your Email" required>
+      <textarea id="fbMessage" rows="4" placeholder="Your Message" required></textarea>
+      <button type="submit">Send via Email</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Loader
+  window.addEventListener('load', () => {
+    setTimeout(() => document.getElementById('loader').classList.add('hide'), 500);
+  });
+
+  // Floating leaves in hero
+  const hero = document.getElementById('home');
+  for(let i=0;i<10;i++){
+    const leaf = document.createElement('div');
+    leaf.className = 'leaf';
+    leaf.textContent = '🍃';
+    leaf.style.left = Math.random()*100 + '%';
+    leaf.style.animationDuration = (10 + Math.random()*10) + 's';
+    leaf.style.animationDelay = (Math.random()*10) + 's';
+    leaf.style.fontSize = (1 + Math.random()*1.2) + 'rem';
+    hero.appendChild(leaf);
+  }
+
+  // Navbar scroll state
+  const navbar = document.getElementById('navbar');
+  const toTop = document.getElementById('toTop');
+  window.addEventListener('scroll', () => {
+    if(window.scrollY > 60){ navbar.classList.add('scrolled'); } else { navbar.classList.remove('scrolled'); }
+    if(window.scrollY > 400){ toTop.classList.add('show'); } else { toTop.classList.remove('show'); }
+  });
+  toTop.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+  // Hamburger toggle
+  const hamburger = document.getElementById('hamburger');
+  const navLinks = document.getElementById('navLinks');
+  hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+  // Smooth logo shrink-to-navbar using rAF + lerp for buttery motion
+  const logoWrap = document.getElementById('logoWrap');
+  let targetProgress = 0, currentProgress = 0;
+
+  function computeTarget(){
+    const heroHeight = window.innerHeight;
+    targetProgress = Math.min(window.scrollY / (heroHeight * 0.6), 1);
+  }
+  window.addEventListener('scroll', computeTarget);
+  window.addEventListener('resize', computeTarget);
+
+  function animateLogo(){
+    currentProgress += (targetProgress - currentProgress) * 0.12;
+    const p = currentProgress;
+
+    const startX = window.innerWidth/2 - 75, endX = 24;
+    const startY = window.innerHeight/2 - 75, endY = 16;
+    const startScale = 1, endScale = 0.24;
+
+    const x = startX + (endX - startX) * p;
+    const y = startY + (endY - startY) * p;
+    const scale = startScale + (endScale - startScale) * p;
+
+    logoWrap.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scale})`;
+    const textOpacity = Math.max(0, 1 - p*1.6);
+    logoWrap.querySelectorAll('.school-name-big, .tagline').forEach(el => el.style.opacity = textOpacity);
+
+    requestAnimationFrame(animateLogo);
+  }
+  computeTarget();
+  requestAnimationFrame(animateLogo);
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  // Counter animation
+  const stats = document.querySelectorAll('.stat h3');
+  const statIO = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        const el = entry.target;
+        const target = +el.dataset.target;
+        let count = 0;
+        const step = Math.max(1, Math.ceil(target / 60));
+        const timer = setInterval(() => {
+          count += step;
+          if(count >= target){ count = target; clearInterval(timer); }
+          el.textContent = count;
+        }, 25);
+        statIO.unobserve(el);
+      }
+    });
+  }, { threshold: 0.4 });
+  stats.forEach(s => statIO.observe(s));
+
+  // Carousel
+  const slides = document.querySelectorAll('#carousel img');
+  let current = 0;
+  setInterval(() => {
+    slides[current].classList.remove('active');
+    current = (current + 1) % slides.length;
+    slides[current].classList.add('active');
+  }, 3500);
+
+  // Notice modal
+  function openModal(id){ document.getElementById(id).classList.add('open'); }
+  function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+  document.querySelectorAll('#noticeList li').forEach(li => {
+    li.addEventListener('click', () => {
+      document.getElementById('noticeModalTitle').textContent = li.dataset.title;
+      document.getElementById('noticeModalDetail').textContent = li.dataset.detail;
+      openModal('noticeModal');
+    });
+  });
+
+  // Feedback modal + mailto submit
+  document.getElementById('feedbackBtn').addEventListener('click', () => openModal('feedbackModal'));
+  document.getElementById('feedbackForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('fbName').value;
+    const email = document.getElementById('fbEmail').value;
+    const msg = document.getElementById('fbMessage').value;
+    const subject = encodeURIComponent('Website enquiry from ' + name);
+    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${msg}`);
+    window.location.href = `mailto: miraclekidspvt@gmail.com?subject=${subject}&body=${body}`;
+    closeModal('feedbackModal');
+  });
+
+  // Close modal on overlay click
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', (e) => { if(e.target === overlay) overlay.classList.remove('open'); });
+  });
+</script>
+
+</body>
+</html>
