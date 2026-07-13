@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Miracle Kids</title>
+<title>Miracle Kids School</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Fredoka:wght@500;600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -170,24 +170,57 @@
 
   /* ---------- ADMISSION ---------- */
   .admission{ background:var(--paper-soft); text-align:center; }
-  .admission .cta-btn{ display:inline-block; margin-top:20px; background:var(--green-deep); color:#fff; padding:14px 34px;
-    border-radius:30px; font-weight:600; transition:.3s; }
-  .admission .cta-btn:hover{ background:var(--gold); color:var(--ink); transform:translateY(-3px); }
+  .cta-btn{ display:inline-block; margin-top:20px; background:var(--green-deep); color:#fff; padding:14px 34px;
+    border-radius:30px; font-weight:600; border:none; cursor:pointer; transition:.3s; }
+  .cta-btn:hover{ background:var(--gold); color:var(--ink); transform:translateY(-3px); }
 
   /* ---------- NOTICES ---------- */
   .ticker-track{ display:flex; gap:20px; overflow:hidden; margin-top:20px; }
-  .ticker-track ul{ display:flex; gap:20px; animation:scroll-left 25s linear infinite; }
+  .ticker-track ul{ display:flex; gap:20px; animation:scroll-left 10s linear infinite; }
   .ticker-track li{ white-space:nowrap; background:#fff; border:1px solid #e1ebe2; padding:12px 22px; border-radius:30px;
     font-size:0.9rem; color:var(--green-deep); font-weight:500; box-shadow:0 4px 14px rgba(0,0,0,0.05); cursor:pointer; transition:.25s; }
   .ticker-track li:hover{ background:var(--gold); color:#fff; border-color:var(--gold); }
-  @keyframes scroll-left{ 0%{ transform:translateX(0);} 100%{ transform:translateX(-50%);} }
+  @keyframes scroll-left{
+    from{
+        transform:translateX(0);
+    }
+    to{
+        transform:translateX(calc(-50% - 10px));
+    }
+}
 
   /* ---------- GALLERY ---------- */
   .carousel{ position:relative; max-width:900px; margin:40px auto 0; height:420px; border-radius:16px; overflow:hidden;
     box-shadow:0 20px 50px rgba(31,107,58,0.18); }
   .carousel img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity 1.2s ease; }
   .carousel img.active{ opacity:1; }
+.gallery-btn{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    width:46px;
+    height:46px;
+    border:none;
+    border-radius:50%;
+    background:rgba(0,0,0,.45);
+    color:#fff;
+    font-size:1.5rem;
+    cursor:pointer;
+    z-index:5;
+    transition:.3s;
+}
 
+.gallery-btn:hover{
+    background:var(--gold);
+}
+
+.gallery-btn.prev{
+    left:16px;
+}
+
+.gallery-btn.next{
+    right:16px;
+}
   /* ---------- TESTIMONIALS ---------- */
   .testimonials{ background:var(--green-soft); text-align:center; }
   .testi-card{ max-width:640px; margin:30px auto 0; background:#fff; padding:34px; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.06); }
@@ -241,6 +274,14 @@
   form.feedback-form button{ background:var(--green-deep); color:#fff; border:none; padding:14px; border-radius:8px;
     font-weight:600; cursor:pointer; transition:.3s; }
   form.feedback-form button:hover{ background:var(--gold); }
+    /* Completely hide the logo wrapper when the nav menu is open */
+  body:has(.nav-links.open) #logoWrap {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transition: opacity 0.2s ease;
+  }
+
 </style>
 </head>
 <body>
@@ -254,6 +295,7 @@
     <li><a href="#facilities">Facilities</a></li>
     <li><a href="#director">Director's Message</a></li>
     <li><a href="#admission">Admission</a></li>
+    <li><a href="#parents">Parents</a></li>
     <li><a href="#notices">Notices</a></li>
     <li><a href="#gallery">Gallery</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -263,7 +305,7 @@
 
 <div class="logo-wrap" id="logoWrap">
   <div class="logo-circle"><img src="./FB_IMG_1783168290417.jpg" alt="Miracle Kids logo"></div>
-  <div class="school-name-big wordmark">Miracle Kids</div>
+  <div class="school-name-big wordmark">Miracle Kids School</div>
   <div class="tagline">Discipline · Destiny · Determine</div>
 </div>
 
@@ -274,7 +316,7 @@
     <span class="eyebrow">About Us</span>
     <h2 class="section-title">A legacy of nurturing young minds</h2>
     <p class="section-text">
-      At <span class="brand-name">Miracle Kids</span>, we believe every child is a seed of potential waiting to
+      At <span class="brand-name">Miracle Kids School</span>, we believe every child is a seed of potential waiting to
       grow. Guided by discipline, driven by destiny, and shaped by determination, our classrooms blend structure
       with warmth so every learner feels seen and supported.
     </p>
@@ -342,15 +384,15 @@
   <div class="director" style="margin-top:30px;">
     <img src="./Screenshot_2026-07-08-21-27-29-852_com.google.android.youtube~2.jpg" alt="Director" loading="lazy">
     <blockquote>
-      "At <span class="brand-name">Miracle Kids</span>, every child matters and every dream counts. We are committed to building strong foundations for lifelong success by nurturing confident learners, compassionate leaders, and responsible individuals in a caring, inspiring environment."
-      <div class="signee">—Mrs. Amrita Shah, Director, Miracle Kids</div>
+      "At <span class="brand-name">Miracle Kids School</span>, every child matters and every dream counts. We are committed to building strong foundations for lifelong success by nurturing confident learners, compassionate leaders, and responsible individuals in a caring, inspiring environment."
+      <div class="signee">—Mrs. Amrita Shah, Director, Miracle Kids School</div>
     </blockquote>
   </div>
 </section>
 
 <section class="admission reveal" id="admission">
   <span class="eyebrow">Admissions</span>
-  <h2 class="section-title">Admissions open for 2026–27</h2>
+  <h2 class="section-title">Admissions Open</h2>
   <p class="section-text" style="margin:0 auto;">
     Reach out to our admission desk for eligibility,
     important dates, and fee details.
@@ -358,37 +400,75 @@
   <a href="#contact" class="cta-btn">Enquire Now</a>
 </section>
 
+<section class="parents reveal" id="parents">
+  <span class="eyebrow">Parents Portal</span>
+
+  <h2 class="section-title">
+    Vidyapith ERP for Parents
+  </h2>
+
+  <p class="section-text" style="margin:0 auto; text-align:center;">
+    Parents can access the Vidyapith ERP Portal to view attendance, fee details, school notices, important announcements, academic information, and much more—all through one secure platform.
+  </p>
+
+  <div style="margin-top:35px;text-align:center;">
+    <button class="cta-btn" onclick="openModal('parentModal')">
+      Open Parents Portal
+    </button>
+  </div>
+</section>
+
+
 <section class="notices reveal" id="notices">
   <span class="eyebrow">Notices</span>
-  <h2 class="section-title">Latest Announcements</h2>
+  <h2 class="section-title">Important Notices</h2>
   <p class="section-text">Tap any notice to read the full announcement.</p>
   <div class="ticker-track">
-    <ul id="noticeList">
-      <li data-title="Summer Break Ends" data-detail="Summer vacation concludes on 1st July. Classes resume as per the regular timetable from 2nd July onward.">📌 Summer break ends — 1st July</li>
-      <li data-title="PTA Meeting" data-detail="A Parent-Teacher meeting is scheduled for 12th July at 9 AM in the school auditorium to discuss student progress and upcoming term activities.">📌 PTA Meeting — 20th July, 10 AM</li>
-    </ul>
-  </div>
+  <ul id="noticeList">
+
+    <li data-title="Admissions Open" data-detail="Admissions are open. Visit our campus or contact the admission office to learn more about eligibility, the admission process, and the fee structure.">📌 Admissions Open</li>
+
+    <li data-title="School Office Hours" data-detail="Parents and guardians are requested to visit the school office during official working hours for admissions, fee-related queries, certificates, or other administrative assistance.">📌 School Office Hours</li>
+
+    <li data-title="Parent Communication" data-detail="Parents are encouraged to stay connected with the school through official communication channels and regularly monitor updates regarding their child's academic progress and school activities.">📌 Parent Communication</li>
+
+    <!-- Duplicate for seamless loop -->
+
+    <li data-title="Admissions Open" data-detail="Admissions are open. Visit our campus or contact the admission office to learn more about eligibility, the admission process, and fee structure.">📌 Admissions Open</li>
+
+    <li data-title="School Office Hours" data-detail="Parents and guardians are requested to visit the school office during official working hours for admissions, fee-related queries, certificates, or other administrative assistance.">📌 School Office Hours</li>
+
+    <li data-title="Parent Communication" data-detail="Parents are encouraged to stay connected with the school through official communication channels and regularly monitor updates regarding their child's academic progress and school activities.">📌 Parent Communication</li>
+
+  </ul>
+</div>
 </section>
 
 <section class="gallery reveal" id="gallery">
   <span class="eyebrow">Gallery</span>
-  <h2 class="section-title">Life at Miracle Kids</h2>
+  <h2 class="section-title">Life at Miracle Kids School</h2>
   <div class="carousel" id="carousel">
-    <img src="./IMG-20260704-WA0003.jpg" class="active" loading="lazy">
-    <img src="./IMG-20260704-WA0013.jpg" loading="lazy">
-    <img src="./IMG-20260704-WA0020.jpg" loading="lazy">
-    <img src="./IMG-20260704-WA0016.jpg" loading="lazy">
-    <img src="./IMG-20260704-WA0015.jpg" loading="lazy">
-    <img src="./IMG-20260704-WA0010.jpg" loading="lazy">
-    <img src="./IMG-20260704-WA0009.jpg" loading="lazy">
-  </div>
+
+<button class="gallery-btn prev">&#10094;</button>
+
+<img src="./IMG-20260704-WA0003.jpg" class="active" loading="lazy">
+<img src="./IMG-20260704-WA0013.jpg" loading="lazy">
+<img src="./IMG-20260704-WA0020.jpg" loading="lazy">
+<img src="./IMG-20260704-WA0016.jpg" loading="lazy">
+<img src="./IMG-20260704-WA0015.jpg" loading="lazy">
+<img src="./IMG-20260704-WA0010.jpg" loading="lazy">
+<img src="./IMG-20260704-WA0009.jpg" loading="lazy">
+
+<button class="gallery-btn next">&#10095;</button>
+
+</div>
 </section>
 
 <section class="testimonials reveal">
   <span class="eyebrow">Parents Speak</span>
   <h2 class="section-title">What our families say</h2>
   <div class="testi-card">
-    <p class="quote">"Miracle Kids has been wonderful for our daughter — she's more confident, curious, and disciplined than ever."</p>
+    <p class="quote">"Miracle Kids School has been wonderful for our daughter — she's more confident, curious, and disciplined than ever."</p>
     <div class="who">— A Parent, Grade 1</div>
   </div>
 </section>
@@ -399,6 +479,7 @@
   <div class="contact-grid" style="margin-top:30px;">
     <div>
       <ul class="contact-info">
+        <li>🏫 <div><b>MIRACLE KIDS SCHOOL PVT LTD</b>PAN: 601234310</div></li>
         <li>📍 <div><b>Address</b>Adarsh Tole-3, Birgunj, Nepal</div></li>
         <li>☎️ <div><b>Phone</b>051591143, 051591180</div></li>
         <li>📞 <div><b>WhatsApp</b>+977 9804818571</div></li>
@@ -441,6 +522,42 @@
       <textarea id="fbMessage" rows="4" placeholder="Your Message" required></textarea>
       <button type="submit">Send via Email</button>
     </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="parentModal">
+  <div class="modal-box">
+
+    <button class="modal-close"
+      onclick="closeModal('parentModal')">✕</button>
+
+    <h3>Parents Portal</h3>
+
+    <p>
+      You are leaving the Miracle Kids School website and will be
+      redirected to the official Vidyapith ERP login portal.
+    </p>
+
+    <p style="margin-top:15px;">
+      Click the button below to continue.
+    </p>
+
+    <div style="margin-top:25px;text-align:center;">
+
+      <a href="https://miracle.vpit.com.np/welcome"
+         target="_blank"
+         style="
+         display:inline-block;
+         background:#1F6B3A;
+         color:white;
+         padding:14px 30px;
+         border-radius:30px;
+         font-weight:600;">
+         Go to Vidyapith ERP
+      </a>
+
+    </div>
+
   </div>
 </div>
 
@@ -539,12 +656,26 @@
 
   // Carousel
   const slides = document.querySelectorAll('#carousel img');
-  let current = 0;
-  setInterval(() => {
+
+let current = 0;
+
+function showSlide(index){
     slides[current].classList.remove('active');
-    current = (current + 1) % slides.length;
+    current = (index + slides.length) % slides.length;
     slides[current].classList.add('active');
-  }, 3500);
+}
+
+document.querySelector('.gallery-btn.next').onclick = () => {
+    showSlide(current + 1);
+};
+
+document.querySelector('.gallery-btn.prev').onclick = () => {
+    showSlide(current - 1);
+};
+
+setInterval(() => {
+    showSlide(current + 1);
+},3500);
 
   // Notice modal
   function openModal(id){ document.getElementById(id).classList.add('open'); }
