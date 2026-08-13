@@ -8,12 +8,29 @@
 </head>
 <body>
   <script>
+    // 1. Initialize Netlify Identity with your Netlify backend URL first
     if (window.netlifyIdentity) {
       window.netlifyIdentity.init({
         APIUrl: "https://luminous-blancmange-7a438f.netlify.app/.netlify/identity"
       });
     }
   </script>
+
+  <!-- 2. Load Decap CMS without auto-init -->
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+
+  <script>
+    // 3. Manually tell Decap CMS to use your Netlify Identity endpoint
+    CMS.init({
+      config: {
+        backend: {
+          name: 'git-gateway',
+          branch: 'main',
+          identity_url: 'https://luminous-blancmange-7a438f.netlify.app/.netlify/identity',
+          gateway_url: 'https://luminous-blancmange-7a438f.netlify.app/.netlify/git/github'
+        }
+      }
+    });
+  </script>
 </body>
 </html>
