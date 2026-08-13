@@ -419,8 +419,20 @@
   </div>
 </section>
 
-
 <section class="notices reveal" id="notices">
+  <span class="eyebrow">Notices</span>
+  <h2 class="section-title">Important Notices</h2>
+  <p class="section-text">Tap any notice to read the full announcement.</p>
+  <div class="ticker-track">
+    <ul id="noticeList">
+      <!-- Notices from data/notices.json will load automatically here -->
+      <li>Loading notices...</li>
+    </ul>
+  </div>
+</section>
+
+
+<!--<section class="notices reveal" id="notices">
   <span class="eyebrow">Notices</span>
   <h2 class="section-title">Important Notices</h2>
   <p class="section-text">Tap any notice to read the full announcement.</p>
@@ -431,11 +443,11 @@
 
     <li data-title="School Office Hours" data-detail="Parents and guardians are requested to visit the school office during official working hours for admissions, fee-related queries, certificates, or other administrative assistance.">📌 School Office Hours</li>
 
-    <li data-title="Parent Communication" data-detail="Parents are encouraged to stay connected with the school through official communication channels and regularly monitor updates regarding their child's academic progress and school activities.">📌 Parent Communication</li>
+    <li data-title="Parent Communication" data-detail="Parents are encouraged to stay connected with the school through official communication channels and regularly monitor updates regarding their child's academic progress and school activities.">📌 Parent Communication</li>-->
 
     <!-- Duplicate for seamless loop -->
 
-    <li data-title="Admissions Open" data-detail="Admissions are open. Visit our campus or contact the admission office to learn more about eligibility, the admission process, and fee structure.">📌 Admissions Open</li>
+    <!--<li data-title="Admissions Open" data-detail="Admissions are open. Visit our campus or contact the admission office to learn more about eligibility, the admission process, and fee structure.">📌 Admissions Open</li>
 
     <li data-title="School Office Hours" data-detail="Parents and guardians are requested to visit the school office during official working hours for admissions, fee-related queries, certificates, or other administrative assistance.">📌 School Office Hours</li>
 
@@ -443,7 +455,7 @@
 
   </ul>
 </div>
-</section>
+</section>-->
 
 <section class="gallery reveal" id="gallery">
   <span class="eyebrow">Gallery</span>
@@ -678,16 +690,56 @@ setInterval(() => {
     showSlide(current + 1);
 },3500);
 
-  // Notice modal
+    // Notice modal helper functions
   function openModal(id){ document.getElementById(id).classList.add('open'); }
   function closeModal(id){ document.getElementById(id).classList.remove('open'); }
-  document.querySelectorAll('#noticeList li').forEach(li => {
-    li.addEventListener('click', () => {
-      document.getElementById('noticeModalTitle').textContent = li.dataset.title;
-      document.getElementById('noticeModalDetail').textContent = li.dataset.detail;
-      openModal('noticeModal');
-    });
-  });
+
+  // Load dynamic notices from data/notices.json
+  function loadNotices() {
+    fetch('./data/notices.json')
+      .then(response => {
+        if (!response.ok) throw new Error('Notice file not found');
+        return response.json();
+      })
+      .then(data => {
+        const noticeList = document.getElementById('noticeList');
+        noticeList.innerHTML = ''; // Clear loading text
+
+        const items = data.items || [];
+        if (items.length === 0) {
+          noticeList.innerHTML = '<li>📌 No announcements at this time</li>';
+          return;
+        }
+
+        // Duplicate list items if there are few notices to keep marquee smooth
+        const displayItems = items.length < 4 ? [...items, ...items] : items;
+
+        displayItems.forEach(notice => {
+          const li = document.createElement('li');
+          li.textContent = '📌 ' + notice.title;
+          li.dataset.title = notice.title;
+          li.dataset.detail = notice.detail;
+
+          // Open modal on click
+          li.addEventListener('click', () => {
+            document.getElementById('noticeModalTitle').textContent = notice.title;
+            document.getElementById('noticeModalDetail').textContent = notice.detail;
+            openModal('noticeModal');
+          });
+
+          noticeList.appendChild(li);
+        });
+      })
+      .catch(err => {
+        console.error('Error fetching notices:', err);
+        const noticeList = document.getElementById('noticeList');
+        noticeList.innerHTML = '<li>📌 Admissions Open</li><li>📌 School Office Hours</li>';
+      });
+  }
+
+  // Execute loading when DOM is ready
+  document.addEventListener('DOMContentLoaded', loadNotices);
+  
 
   // Feedback modal + mailto submit
   document.getElementById('feedbackBtn').addEventListener('click', () => openModal('feedbackModal'));
