@@ -1,8 +1,6 @@
 backend:
   name: git-gateway
   branch: main
-  identity_url: "https://luminous-blancmange-7a438f.netlify.app/.netlify/identity"
-  gateway_url: "https://luminous-blancmange-7a438f.netlify.app/.netlify/git/github"
 
 media_folder: "uploads"
 public_folder: "/uploads"
@@ -10,8 +8,14 @@ public_folder: "/uploads"
 collections:
   - name: "notices"
     label: "Notices"
-    folder: "data/notices"
-    create: true
-    fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Details", name: "detail", widget: "text" }
+    files:
+      - file: "data/notices.json"
+        label: "Notice List"
+        name: "notices_list"
+        fields:
+          - label: "Notices"
+            name: "items"
+            widget: "list"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Details", name: "detail", widget: "text" }
