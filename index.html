@@ -672,28 +672,49 @@
   }, { threshold: 0.4 });
   stats.forEach(s => statIO.observe(s));
 
-  // Carousel
-  const slides = document.querySelectorAll('#carousel img');
+    // Dynamic Carousel
+  let current = 0;
+  let slides = [];
+  let carouselTimer = null;
 
-let current = 0;
-
-function showSlide(index){
+  function showSlide(index){
+    if (!slides.length) return;
     slides[current].classList.remove('active');
     current = (index + slides.length) % slides.length;
     slides[current].classList.add('active');
-}
+  }
 
-document.querySelector('.gallery-btn.next').onclick = () => {
-    showSlide(current + 1);
-};
+  function loadGallery() {
+    fetch('./data/gallery.json?v=' + new Date().getTime())
+      .then(res => res.json())
+      .then(data => {
+        const carousel = document.getElementById('carousel');
+        const images = data.images || [];
 
-document.querySelector('.gallery-btn.prev').onclick = () => {
-    showSlide(current - 1);
-};
+        if (images.length === 0) return;
 
-setInterval(() => {
-    showSlide(current + 1);
-},3500);
+        carousel.querySelectorAll('img').forEach(img => img.remove());
+
+        images.forEach((src, idx) => {
+          const img = document.createElement('img');
+          img.src = src;
+          img.loading = 'lazy';
+          if (idx === 0) img.classList.add('active');
+          carousel.insertBefore(img, carousel.querySelector('.next'));
+        });
+
+        slides = carousel.querySelectorAll('img');
+        current = 0;
+
+        if (carouselTimer) clearInterval(carouselTimer);
+        carouselTimer = setInterval(() => showSlide(current + 1), 3500);
+      })
+      .catch(err => console.error('Error fetching gallery images:', err));
+  }
+
+  document.querySelector('.gallery-btn.next').onclick = () => showSlide(current + 1);
+  document.querySelector('.gallery-btn.prev').onclick = () => showSlide(current - 1);
+  
 
     // Notice modal helper functions
   function openModal(id){ document.getElementById(id).classList.add('open'); }
@@ -742,8 +763,11 @@ setInterval(() => {
       });
   }
 
-  // Execute loading when DOM is ready
-  document.addEventListener('DOMContentLoaded', loadNotices);
+    // Execute loading when DOM is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    loadNotices();
+    loadGallery();
+  });
   
 
   // Feedback modal + mailto submit
