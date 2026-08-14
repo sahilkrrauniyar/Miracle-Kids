@@ -695,7 +695,7 @@ setInterval(() => {
 
   // Load dynamic notices from data/notices.json
   function loadNotices() {
-    fetch('./data/notices.json')
+    fetch('./data/notices.json?v=' + new Date().getTime())
       .then(response => {
         if (!response.ok) throw new Error('Notice file not found');
         return response.json();
