@@ -7,17 +7,24 @@ media_folder: "uploads"
 public_folder: "/uploads"
 
 collections:
-  - name: "notices"
+  - name: "notices_list"
     label: "Notices"
     files:
       - file: "data/notices.json"
-        label: "Notice List"
-        name: "notices_list"
+        label: "Notice Items"
+        name: "notices"
         fields:
-          - label: "Notices"
-            name: "items"
-            widget: "list"
-            fields:
-              - { label: "Title", name: "title", widget: "string" }
-              - { label: "Details", name: "detail", widget: "text" }
-              
+          - { label: "Notices", name: "items", widget: "list", fields: [
+              { label: "Title", name: "title", widget: "string" },
+              { label: "Detail", name: "detail", widget: "text" }
+            ]}
+
+  - name: "gallery_list"
+    label: "Gallery Photos"
+    files:
+      - file: "data/gallery.json"
+        label: "Carousel Images"
+        name: "gallery"
+        fields:
+          - { label: "Images", name: "images", widget: "list", field: { label: "Image", name: "image", widget: "image" } }
+          
