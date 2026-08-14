@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: YOUR_GITHUB_USERNAME/YOUR_REPOSITORY_NAME # e.g. sahil/miracle-kids
+  repo: sahilkrrauniyar/Miracle-Kids
   branch: main
   auth_type: pkce
 
@@ -21,4 +21,3 @@ collections:
             fields:
               - { label: "Title", name: "title", widget: "string" }
               - { label: "Details", name: "detail", widget: "text" }
-              
