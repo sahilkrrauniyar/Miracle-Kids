@@ -1,1 +1,12 @@
-
+{
+  "items": [
+    {
+      "title": "Admissions Open",
+      "detail": "Admissions are open. Visit our campus or contact the admission office to learn more about eligibility, the admission process, and fee structure."
+    },
+    {
+      "title": "School Office Hours",
+      "detail": "Parents and guardians are requested to visit the school office during official working hours for admissions or fee queries."
+    }
+  ]
+}
