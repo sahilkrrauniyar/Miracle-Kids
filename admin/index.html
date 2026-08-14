@@ -9,7 +9,16 @@
 <body>
   <script src="https://unpkg.com/@staticcms/app@^4.0.0/dist/static-cms-app.js"></script>
   <script>
-    window.CMS.init();
+    window.CMS.init({
+      config: {
+        backend: {
+          name: 'github',
+          repo: 'sahilkrrauniyar/Miracle-Kids',
+          branch: 'main',
+          auth_type: 'pkce'
+        }
+      }
+    });
   </script>
 </body>
 </html>
