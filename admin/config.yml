@@ -3,6 +3,7 @@ backend:
   repo: sahilkrrauniyar/Miracle-Kids
   branch: main
   auth_type: pkce
+  cms_label_prefix: "content/"
 
 media_folder: "uploads"
 public_folder: "/uploads"
